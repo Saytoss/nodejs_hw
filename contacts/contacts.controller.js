@@ -1,6 +1,5 @@
 const Joi = require("joi");
 const contacts = require("../db/contacts.json");
-const isEmpty = require("lodash");
 const NotFoundError = require("./contacts.error");
 
 class ContactsController {
@@ -69,7 +68,7 @@ class ContactsController {
         req.params.contactId
       );
 
-      if (isEmpty(req.body)) {
+      if (Object.keys(req.body).length == 0) {
         return res.status(400).json({ message: "missing fields" });
       }
       contacts[targetContactIndex] = {
