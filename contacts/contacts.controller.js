@@ -1,7 +1,6 @@
 const Joi = require("joi");
 const contactModel = require("./contacts.model");
 const NotFoundError = require("./contacts.error");
-const { MongoClient, ObjectID } = require("mongodb");
 
 class ContactsController {
   async listContacts(req, res) {

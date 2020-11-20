@@ -34,7 +34,15 @@ class Server {
     });
   }
   async initDB() {
-    await mongoose.connect(mongodb_URL);
+    try {
+      await mongoose.connect(mongodb_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      console.log("Database connection successful");
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
 
