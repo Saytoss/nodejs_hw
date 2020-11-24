@@ -9,15 +9,18 @@ const userRouter = require("./users/users.router");
 const PORT = process.env.PORT || 3000;
 const mongodb_URL = process.env.MONGODB_URL;
 
+
 class Server {
   constructor() {
     this.server = null;
   }
+
   async start() {
     this.server = express();
     this.initMiddlewares();
     this.initRouters();
     await this.initDB();
+
     this.listen();
   }
   initMiddlewares() {
@@ -28,13 +31,16 @@ class Server {
 
   initRouters() {
     this.server.use("/contacts", contactsRouter);
+
     this.server.use("/users", userRouter);
+
   }
   listen() {
     this.server.listen(PORT, () => {
       console.log("Server is listening on port", PORT);
     });
   }
+
   async initDB() {
     try {
       await mongoose.connect(mongodb_URL, {
@@ -46,6 +52,7 @@ class Server {
       console.log(err);
     }
   }
+
 }
 
 const server = new Server();

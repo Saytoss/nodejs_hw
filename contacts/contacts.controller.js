@@ -1,4 +1,5 @@
 const Joi = require("joi");
+
 const contactModel = require("./contacts.model");
 
 class ContactsController {
@@ -14,13 +15,16 @@ class ContactsController {
 
     if (contact) {
       return res.status(200).json(contact);
+
     }
 
     return res.status(404).json({ message: "Not found" });
   }
 
+
   async addContact(req, res) {
     const addedContact = await contactModel.create(req.body);
+
     return res.status(201).json(addedContact);
   }
   validateCreateContact(req, res, next) {
@@ -61,6 +65,7 @@ class ContactsController {
     }
 
     return res.status(200).json(contact);
+
   }
 }
 
