@@ -1,34 +1,30 @@
 const Joi = require("joi");
-const contacts = require("../db/contacts.json");
-const NotFoundError = require("./contacts.error");
+
+const contactModel = require("./contacts.model");
 
 class ContactsController {
-  get removeContact() {
-    return this._removeContact.bind(this);
-  }
-  get updateContact() {
-    return this._updateContact.bind(this);
-  }
-  listContacts(req, res) {
+  async listContacts(req, res) {
+    const contacts = await contactModel.find();
     res.json(contacts);
   }
-  getById(req, res) {
+
+  async getById(req, res) {
     const id = req.params.contactId;
 
-    const targetContactId = contacts.find((contact) => contact.id == id);
+    const contact = await contactModel.findById(id);
 
-    if (targetContactId) {
-      return res.status(200).json(targetContactId);
+    if (contact) {
+      return res.status(200).json(contact);
+
     }
 
     return res.status(404).json({ message: "Not found" });
   }
-  addContact(req, res) {
-    const addedContact = {
-      ...req.body,
-      id: contacts.length + 1,
-    };
-    contacts.push(addedContact);
+
+
+  async addContact(req, res) {
+    const addedContact = await contactModel.create(req.body);
+
     return res.status(201).json(addedContact);
   }
   validateCreateContact(req, res, next) {
@@ -46,54 +42,30 @@ class ContactsController {
     next();
   }
 
-  async _removeContact(req, res, next) {
-    try {
-      const targetContactIndex = this.findContactIndexById(
-        res,
-        req.params.contactId
-      );
+  async removeContact(req, res) {
+    const id = req.params.contactId;
 
-      contacts.splice(targetContactIndex, 1);
-
-      return res.status(200).json({ message: "contact deleted" });
-    } catch (err) {
-      next(err);
+    const contact = await contactModel.findByIdAndDelete(id);
+    if (!contact) {
+      return res.status(404).json({ message: "Contact is not found" });
     }
+
+    res.status(204).send(contact);
   }
 
-  async _updateContact(req, res, next) {
-    try {
-      const targetContactIndex = this.findContactIndexById(
-        res,
-        req.params.contactId
-      );
+  async updateContact(req, res) {
+    const id = req.params.contactId;
 
-      if (Object.keys(req.body).length == 0) {
-        return res.status(400).json({ message: "missing fields" });
-      }
-      contacts[targetContactIndex] = {
-        ...contacts[targetContactIndex],
-        ...req.body,
-      };
-      const targetContactId = contacts.find(
-        (contact) => contact.id == req.params.contactId
-      );
-      return res.status(200).json(targetContactId);
-    } catch (err) {
-      next(err);
-    }
-  }
+    const contact = await contactModel.findByIdAndUpdate(id, {
+      $set: req.body,
+    });
 
-  findContactIndexById(res, contactId) {
-    const id = parseInt(contactId);
-    const targetContactIndex = contacts.findIndex(
-      (contact) => contact.id === id
-    );
-    if (targetContactIndex === -1) {
-      throw new NotFoundError();
+    if (Object.keys(req.body).length == 0) {
+      return res.status(400).json({ message: "missing fields" });
     }
 
-    return targetContactIndex;
+    return res.status(200).json(contact);
+
   }
 }
 

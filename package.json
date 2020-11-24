@@ -1,17 +1,19 @@
 {
-  "name": "02express",
+
+  "name": "nodejs_hw",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "dependencies": {
+
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "joi": "^17.3.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.15",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.4",
-    "uniqid": "^5.2.0",
-    "yargs": "^16.0.3"
+    "nodemon": "^2.0.6"
   },
   "devDependencies": {},
   "scripts": {
